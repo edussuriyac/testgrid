@@ -51,7 +51,6 @@ function check_tools() {
         echo "installing Kubernetes command-line tool (kubectl) before you start with the setup"
         gcloud components install kubectl
     fi
-
 }
 
 
@@ -67,23 +66,8 @@ function auth() {
     gcloud container clusters get-credentials $CLUSTER_NAME --zone $ZONE --project $PROJECT_NAME
 
     rm $INPUT_DIR/key.json
-
-    #install helm in not installed
-    install_helm
-
 }
 
-function install_helm() {
-
-    if ! type 'helm'
-    then
-        curl -LO https://git.io/get_helm.sh
-        chmod 700 get_helm.sh
-        ./get_helm.sh
-        helm init
-    fi
-    
-}
 function create_randomName() {
     if [ -z $name ]
     then 
@@ -103,7 +87,6 @@ function create_namespace() {
 function set_properties() {
     echo "namespace=$NAME" >> $OUTPUT_DIR/infrastructure.properties
     echo "randomPort=True">> $OUTPUT_DIR/infrastructure.properties
-    echo "DBEngine=$DBEngine">> $OUTPUT_DIR/infrastructure.properties
 }
 
 function infra_creation() {
@@ -114,4 +97,3 @@ function infra_creation() {
 }
 
 infra_creation
-
