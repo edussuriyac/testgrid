@@ -62,7 +62,6 @@ public class KubernetesProvider implements InfrastructureProvider {
 
     @Override
     public void init(TestPlan testPlan) throws TestGridInfrastructureException {
-
     }
 
     @Override
@@ -85,7 +84,7 @@ public class KubernetesProvider implements InfrastructureProvider {
         setInfraProperties(testPlan);
         setProperties(testPlan);
         ClassLoader classLoader = getClass().getClassLoader();
-        URL resource = classLoader.getResource(TestGridConstants.INFRA_SCRIPT);
+        URL resource = classLoader.getResource(TestGridConstants.KUBERNETES_INFRA_SCRIPT);
         InfrastructureProvisionResult result = ShellScriptProviderFactory.provision(testPlan,
                 Paths.get(resource.getPath()));
         return result;
@@ -105,10 +104,11 @@ public class KubernetesProvider implements InfrastructureProvider {
     public boolean release(InfrastructureConfig infrastructureConfig, String infraRepoDir,
                            TestPlan testPlan, Script script) throws TestGridInfrastructureException {
         ClassLoader classLoader = getClass().getClassLoader();
-        URL resource = classLoader.getResource(TestGridConstants.DESTROY_SCRIPT);
-        boolean exitCode = ShellScriptProviderFactory.release(infrastructureConfig,
+        URL resource = classLoader.getResource(TestGridConstants.KUBERNETES_DESTROY_SCRIPT);
+        assert resource != null;
+        boolean release = ShellScriptProviderFactory.release(infrastructureConfig,
                 testPlan, Paths.get(resource.getPath()));
-        return exitCode;
+        return release;
     }
 
 
@@ -142,7 +142,7 @@ public class KubernetesProvider implements InfrastructureProvider {
         final Path location = DataBucketsHelper.getInputLocation(testPlan)
                 .resolve(DataBucketsHelper.INFRA_OUT_FILE);
         String deployRepositoryLocation = Paths.get(testPlan.getDeploymentRepository()).toString();
-        String yamlFileLocation = Paths.get(deployRepositoryLocation, "*").toString();
+        String yamlFileLocation = Paths.get(deployRepositoryLocation).toString();
         logger.info(location.toString());
         try {
             wumUserName = ConfigurationContext.getProperty(ConfigurationContext.

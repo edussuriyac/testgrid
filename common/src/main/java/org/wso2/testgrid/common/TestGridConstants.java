@@ -57,8 +57,10 @@ public class TestGridConstants {
 
     public static final String DEFAULT_DEPLOYMENT_PATTERN_NAME = "default";
     public static final String DEFAULT_DEPLOYMENT_SCRIPT_NAME = "deploy.sh";
+    public static final String YAML_FILES_LOCATION = "yamlFilesLocation";
     public static final String TESTGRID_CONFIG_FILE = "config.properties";
     public static final String TESTGRID_SCENARIO_OUTPUT_PROPERTY_FILE = "output.properties";
+    public static final String DEPLOYMENT_REPOSITORY_LOCATION = "deploymentRepositoryLocation";
 
     public static final String WUM_USERNAME_PROPERTY = "WUMUsername";
     public static final String WUM_PASSWORD_PROPERTY = "WUMPassword";
@@ -91,11 +93,21 @@ public class TestGridConstants {
     public static final String KEY_FILE_LOCATION = "keyFileLocation";
     public static final String HTTP = "http://";
     public static final String TEST_RESULTS_ARCHIVE_DIR = "test-outputs";
-    @Deprecated public static final String TEST_RESULTS_DIR_OLD = "test-outputs/scenarios";
+    @Deprecated
+    public static final String TEST_RESULTS_DIR_OLD = "test-outputs/scenarios";
     public static final String TEST_RESULTS_DIR = "test-outputs";
     public static final String TEST_RESULTS_SCENARIO_DIR = "scenarios";
 
     public static final String NOT_CONFIGURED_STR = "/not-configured/";
 
     public static final String MAVEN_RELATED_DIR = "target";
+
+    public static final String KUBERNETES_INFRA_SCRIPT = "infra.sh";
+    public static final String KUBERNETES_DEPLOY_SCRIPT = "deploy.sh";
+    public static final String KUBERNETES_DESTROY_SCRIPT = "destroy.sh";
+    public static final String HELM_INFRA_SCRIPT = "helmInfra.sh";
+    public static final String HELM_DEPLOY_SCRIPT = "helmDeploy.sh";
+    public static final String HELM_DESTROY_SCRIPT = "helmDestroy.sh";
+
+
 }

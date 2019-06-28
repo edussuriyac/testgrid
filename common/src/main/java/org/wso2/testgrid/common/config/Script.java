@@ -141,6 +141,18 @@ public class Script implements Serializable, Cloneable {
         OPENSTACK("OpenStack"),
 
         /**
+         * Defines the Kubernetes script type
+         */
+
+        KUBERNETES("KUBERNETES"),
+
+        /**
+         * Defines the Helm script type
+         */
+
+        HELM("HELM"),
+
+        /**
          * Defines the AWS cloud-formation script type.
          * TODO: think how we can remove this.
          */

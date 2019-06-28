@@ -85,7 +85,7 @@ public class HelmProvider implements InfrastructureProvider {
         setInfraProperties(testPlan);
         setProperties(testPlan);
         ClassLoader classLoader = getClass().getClassLoader();
-        URL resource = classLoader.getResource(TestGridConstants.INFRA_SCRIPT);
+        URL resource = classLoader.getResource(TestGridConstants.HELM_INFRA_SCRIPT);
         InfrastructureProvisionResult result = ShellScriptProviderFactory.provision(testPlan,
                 Paths.get(resource.getPath()));
         return result;
@@ -105,7 +105,7 @@ public class HelmProvider implements InfrastructureProvider {
     public boolean release(InfrastructureConfig infrastructureConfig, String infraRepoDir,
                            TestPlan testPlan, Script script) throws TestGridInfrastructureException {
         ClassLoader classLoader = getClass().getClassLoader();
-        URL resource = classLoader.getResource(TestGridConstants.DESTROY_SCRIPT);
+        URL resource = classLoader.getResource(TestGridConstants.HELM_DESTROY_SCRIPT);
         boolean exitCode = ShellScriptProviderFactory.release(infrastructureConfig,
                 testPlan, Paths.get(resource.getPath()));
         return exitCode;
@@ -154,6 +154,8 @@ public class HelmProvider implements InfrastructureProvider {
         }
 
         try (OutputStream os = Files.newOutputStream(location, CREATE, APPEND)) {
+            os.write(("\n" + TestGridConstants.DEPLOYMENT_REPOSITORY_LOCATION + "=" + deployRepositoryLocation).
+                    getBytes(StandardCharsets.UTF_8));
             os.write(("\n" + TestGridConstants.YAML_FILES_LOCATION + "=" + yamlFileLocation).
                     getBytes(StandardCharsets.UTF_8));
             os.write(("\n" + TestGridConstants.WUM_USERNAME_PROPERTY + "=" + wumUserName).

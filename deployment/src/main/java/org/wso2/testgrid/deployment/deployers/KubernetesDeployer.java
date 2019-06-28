@@ -56,7 +56,7 @@ public class KubernetesDeployer implements Deployer {
                                            InfrastructureProvisionResult infrastructureProvisionResult)
             throws TestGridDeployerException {
         ClassLoader classLoader = getClass().getClassLoader();
-        URL resource = classLoader.getResource(TestGridConstants.DEPLOY_SCRIPT);
+        URL resource = classLoader.getResource(TestGridConstants.KUBERNETES_DEPLOY_SCRIPT);
         DeploymentCreationResult deploymentCreationResult = ShellDeployerFactory.deploy(testPlan,
                 infrastructureProvisionResult, Paths
                         .get(resource.getPath()));

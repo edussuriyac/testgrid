@@ -46,16 +46,13 @@ function create_resources() {
     if [ -z $yamlFilesLocation ]; then
       echo "the yaml files location is not given"
       exit 1
-    else
-      i=0;
-      for ((i=0; i<$no_yamls; i++))
-      do
-        kubectl create -f $yamlFilesLocation/${yaml[$i]}
-      done
     fi
 
-    readiness_deployments
-    sleep 10
+    #create values.yaml file
+    create_value_yaml
+
+    #install helm
+    install_helm
 
     i=0;
     for ((i=0; i<$dep_num; i++))
@@ -68,20 +65,7 @@ function create_resources() {
     echo "namespace=$namespace" >> $OUTPUT_DIR/deployment.properties
 }
 
-function readiness_deployments(){
-    i=0;
-    # todo add a terminal condition/timeout.
-    for ((i=0; i<$dep_num; i++)) ; do
-      num_true=0;
-      while [ "$num_true" -eq "0" ] ; do
-        sleep 5
-        deployment_status=$(kubectl get deployments -n $namespace ${dep[$i]} -o jsonpath='{.status.conditions[?(@.type=="Available")].status}')
-        if [ "$deployment_status" == "True" ] ; then
-          num_true=1;
-        fi
-      done
-    done
-}
+
 
 function readinesss_services(){
     i=0;
@@ -94,13 +78,56 @@ function readinesss_services(){
         #external_ip=$(kubectl get ingress ${ingressName} --template="{{range .status.loadBalancer.ingress}}{{.ip}}{{end}}" --namespace ${namespace})
         [ -z "$external_ip" ] && sleep 10
       done
-       echo "PublisherUrl=https://$external_ip:9443/publisher" >> $OUTPUT_DIR/deployment.properties
+      echo "PublisherUrl=https://$external_ip:9443/publisher" >> $OUTPUT_DIR/deployment.properties
       echo "StoreUrl=https://$external_ip:9443/store" >> $OUTPUT_DIR/deployment.properties
       echo "AdminUrl=https://$external_ip:9443/admin" >> $OUTPUT_DIR/deployment.properties
       echo "CarbonServerUrl=https://$external_ip:9443/services/" >> $OUTPUT_DIR/deployment.properties
       echo "CarbonServerUrl=https://$external_ip:9443/services/" >> $OUTPUT_DIR/deployment.properties
       echo "GatewayHttpsUrl=https://$external_ip:8243" >> $OUTPUT_DIR/deployment.properties
       done
+}
+
+
+function create_value_yaml(){
+cat > values.yaml << EOF
+username: $WUMUsername
+password: $WUMPassword
+email: $WUMUsername
+
+namespace: $namespace
+svcaccount: "wso2svc-account"
+serverIp: "172.31.35.163"
+dbType: $DBEngine
+operatingSystem: $OS
+jdkType: $JDK
+sharedDeploymentLocationPath: "/home/ubuntu/server"
+sharedTenantsLocationPath: "/home/ubuntu/tenants"
+EOF
+cp values.yaml $deploymentRepositoryLocation/
+}
+
+function install_helm(){
+    curl -LO https://git.io/get_helm.sh
+    chmod 700 get_helm.sh
+    ./get_helm.sh
+    resources_deployment
+    helm init
+}
+
+function resources_deployment(){
+    if [ "$DBEngine" == "mysql"]
+    then
+        helm install --name wso2is-rdbms-service -f $deploymentRepositoryLocation/mysql/values.yaml stable/mysql --namespace $namespace
+    fi
+    if [ "$DBEngine" == "postgresql"]
+    then
+        helm install --name wso2is-rdbms-service -f $deploymentRepositoryLocation/postgresql/values.yaml stable/postgresql --namespace $namespace
+    fi
+    if [ "$DBEngine" == "mssql"]
+    then
+        helm install --name wso2is-rdbms-service -f $deploymentRepositoryLocation/mssql/values.yaml stable/mssql-linux --namespace $namespace
+        kubectl create -f $deploymentRepositoryLocation/jobs/db_provisioner_job.yaml --namespace $namespace
+    fi
 }
 
 create_resources
