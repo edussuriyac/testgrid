@@ -142,7 +142,7 @@ public class HelmProvider implements InfrastructureProvider {
         final Path location = DataBucketsHelper.getInputLocation(testPlan)
                 .resolve(DataBucketsHelper.INFRA_OUT_FILE);
         String deployRepositoryLocation = Paths.get(testPlan.getDeploymentRepository()).toString();
-        String yamlFileLocation = Paths.get(deployRepositoryLocation, "*").toString();
+        String yamlFileLocation = Paths.get(deployRepositoryLocation).toString();
         logger.info(location.toString());
         try {
             wumUserName = ConfigurationContext.getProperty(ConfigurationContext.

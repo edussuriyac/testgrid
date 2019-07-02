@@ -50,7 +50,7 @@ function create_resources() {
       i=0;
       for ((i=0; i<$no_yamls; i++))
       do
-        kubectl create -f $yamlFilesLocation/${yaml[$i]}
+        kubectl create -f $yamlFilesLocation/${yamls[$i]}
       done
     fi
 
